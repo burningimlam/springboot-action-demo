@@ -9,6 +9,9 @@
 name: CI
 
 on:
+
+  workflow_dispatch:
+  
   push:
     branches: 
       - "master"
@@ -16,7 +19,7 @@ on:
       - 'v*'
   pull_request:
     branches: [ "master" ]
-
+    
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: 'imlam/springboot-action-demo'
