@@ -24,7 +24,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: 'g-pksr8814-docker.pkg.coding.net/springboot-action-demo/github-action-test'
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: 'g-pksr8814-docker.pkg.coding.net/springboot-action-demo/github-action-test/springboot-action-demo'
 
 jobs:
   build:
