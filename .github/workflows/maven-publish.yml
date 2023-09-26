@@ -16,7 +16,7 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: 'github-action-springboot'
   # username
-  USER_NAME: 'burningimlam'
+  USERNAME: 'burningimlam'
 jobs:
   # build 任务的名称 可以叫build2  test3
   build:
@@ -64,4 +64,4 @@ jobs:
           # 构建完成后 push
           push: true
           # github账号 tag
-          tags: ${{ env.username }}/ylsyz-teahcer-info-backend:latest
+          tags: ${{ env.USERNAME }}/ylsyz-teahcer-info-backend:latest
