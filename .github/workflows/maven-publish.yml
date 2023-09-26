@@ -13,6 +13,8 @@ on:
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: 'g-pksr8814-docker.pkg.coding.net/github-action-springboot/docker-repo'
+  #
+  PROJECT_REGISTRY: 'g-pksr8814-docker.pkg.coding.net'
   # github.repository as <account>/<repo>
   IMAGE_NAME: 'ylsyz-teahcer-info-backend'
   # username
@@ -80,6 +82,7 @@ jobs:
            sudo docker stop ${{env.IMAGE_NAME}}
            sudo docker rm ${{env.IMAGE_NAME}}
            sudo docker rmi ${{env.IMAGE_NAME}}:latest
+           sudo docker login -u ${{ secrets.CODING_USERNAME }} -p ${{ secrets.CODING_PASSWORD }} ${{env.PROJECT_REGISTRY}}
            sudo docker pull ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
            sudo docker run -d --name ${{env.IMAGE_NAME}} -p 8089:8080 --network prod-env-network ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
         
