@@ -52,8 +52,8 @@ jobs:
         with:
           # 账号密码在Setting/secrets/Actions  New repository secret  如果命名不合规提交不会保存
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.CODING_USER }}
-          password: ${{ secrets.CODING_USERNAME }}
+          username: ${{ secrets.CODING_USERNAME }}
+          password: ${{ secrets.CODING_USERPASSWORD }}
 
       - name: Build and push
         # 开始构建 在当前目录下找Dockerfile,也可以指定Dockerfile位置
@@ -65,18 +65,3 @@ jobs:
           push: true
           # github账号 tag
           tags: ${{ env.username }}/ylsyz-teahcer-info-backend:latest
-
-        # ssh远程连接服务器
-#      - name: SSH REMOTE
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.HOST}}
-#          username: ${{ secrets.SSH_USERNAME }}
-#          # 使用密码不用key
-#          password: ${{ secrets.SSH_PASSWORD }}
-#          port: ${{ secrets.PORT }}
-#          # | 执行多行脚本命令。run.sh中可以写删除 拉取 构建镜像...
-#          script: |
-#            cd /home/wxserver
-#            sh run.sh
-        
