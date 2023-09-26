@@ -77,9 +77,9 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           # | 执行多行脚本命令。run.sh中可以写删除 拉取 构建镜像...
           script: |
-            docker stop ${{env.IMAGE_NAME}}
-            docker rm ${{env.IMAGE_NAME}}
-            docker rmi ${{env.IMAGE_NAME}}:latest
-            docker pull ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
-            docker run -d --name ${{env.IMAGE_NAME}} -p 8089:8080 --network prod-env-network ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
+           sudo docker stop ${{env.IMAGE_NAME}}
+           sudo docker rm ${{env.IMAGE_NAME}}
+           sudo docker rmi ${{env.IMAGE_NAME}}:latest
+           sudo docker pull ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
+           sudo docker run -d --name ${{env.IMAGE_NAME}} -p 8089:8080 --network prod-env-network ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
         
