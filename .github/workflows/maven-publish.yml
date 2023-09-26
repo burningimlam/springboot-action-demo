@@ -65,3 +65,17 @@ jobs:
           push: true
           # github账号 tag
           tags: ${{ env.REGISTRY }}/ylsyz-teahcer-info-backend:latest
+
+      # ssh远程连接服务器
+      - name: SSH REMOTE
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST}}
+          username: ${{ secrets.SSH_USERNAME }}
+          # 使用密码不用key
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          # | 执行多行脚本命令。run.sh中可以写删除 拉取 构建镜像...
+          script: |
+            who i am
+        
