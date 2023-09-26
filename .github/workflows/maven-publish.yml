@@ -14,7 +14,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: 'g-pksr8814-docker.pkg.coding.net/github-action-springboot/docker-repo'
   # github.repository as <account>/<repo>
-  IMAGE_NAME: 'github-action-springboot'
+  IMAGE_NAME: 'ylsyz-teahcer-info-backend'
   # username
   USERNAME: 'burningimlam'
 jobs:
@@ -64,7 +64,7 @@ jobs:
           # 构建完成后 push
           push: true
           # github账号 tag
-          tags: ${{ env.REGISTRY }}/ylsyz-teahcer-info-backend:latest
+          tags: ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
 
       # ssh远程连接服务器
       - name: SSH REMOTE
@@ -77,5 +77,9 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           # | 执行多行脚本命令。run.sh中可以写删除 拉取 构建镜像...
           script: |
-            who i am
+            docker stop ${{env.IMAGE_NAME}}
+            docker rm ${{env.IMAGE_NAME}}
+            docker rmi ${{env.IMAGE_NAME}}:latest
+            docker pull ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
+            docker run -d --name ${{env.IMAGE_NAME}} -p 8089:8080 --network prod-env-network ${{ env.REGISTRY }}/${{env.IMAGE_NAME}}:latest
         
