@@ -1,76 +1,82 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: CI
-
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+# 给工作流程起个名字
+name: Java CI with Maven
+# 触发时机
 on:
-
+  # 在push master分支时触发
   workflow_dispatch:
-  
+
   push:
-    branches: 
-      - "master"
-    tags:
-      - 'v*'
-  pull_request:
-    branches: [ "master" ]
-    
+    branches: master
+# 要执行的任务 可以是多个
 env:
   # Use docker.io for Docker Hub if empty
-  REGISTRY: 'g-pksr8814-docker.pkg.coding.net/springboot-action-demo/github-action-test'
+  REGISTRY: 'g-pksr8814-docker.pkg.coding.net/github-action-springboot/docker-repo'
   # github.repository as <account>/<repo>
-  IMAGE_NAME: 'g-pksr8814-docker.pkg.coding.net/springboot-action-demo/github-action-test/springboot-action-demo'
-
+  IMAGE_NAME: 'github-action-springboot'
+  # username
+  USER_NAME: 'burningimlam'
 jobs:
+  # build 任务的名称 可以叫build2  test3
   build:
-
+    # 在ubuntu-latest上运行
     runs-on: ubuntu-latest
-
+    # 运行的步骤
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn -B clean package --file pom.xml
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{env.IMAGE_NAME}}
-    - name: echo
-      run: echo $GITHUB_REF_NAME
-      
-    # 登录  
-    - name: Log into registry ${{ env.REGISTRY }}
-      if: github.event_name != 'pull_request'
-      uses: docker/login-action@v2
-      with:
+      # 拉取代码
+      - uses: actions/checkout@v3
+      # 步骤名称
+      - name: Set up JDK 8
+        # 设置maven Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          # 启用缓存
+          cache: maven
+      - name: Build with Maven
+        # 打包  这些步骤都是在工作目录下进行的 生成的jar文件在target下
+        run: mvn -B package --file pom.xml
+        # docker构建多平台
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        # 初始化构建环境
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        # 账号密码登录dockerhub
+        uses: docker/login-action@v2
+        with:
+          # 账号密码在Setting/secrets/Actions  New repository secret  如果命名不合规提交不会保存
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.CODING_USERNAME }}
-          password: ${{ secrets.CODING_PASSWORD }}
-    # Extract metadata (tags, labels) for Docker
-    # https://github.com/docker/metadata-action
-    - name: Extract Docker metadata
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-          images: ${{ env.IMAGE_NAME }}
-          tags: |
-            # set latest tag for default branch
-            type=raw,value=latest,enable={{is_default_branch}}
-            # tag event
-            type=ref,enable=true,priority=600,prefix=,suffix=,event=tag
-   # 推送
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v3
-      with:
-        context: .
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+          username: ${{ secrets.CODING_USER }}
+          password: ${{ secrets.CODING_USERNAME }}
+
+      - name: Build and push
+        # 开始构建 在当前目录下找Dockerfile,也可以指定Dockerfile位置
+        uses: docker/build-push-action@v3
+        with:
+          # 当前工作目录
+          context: .
+          # 构建完成后 push
+          push: true
+          # github账号 tag
+          tags: ${{ env.username }}/ylsyz-teahcer-info-backend:latest
+
+        # ssh远程连接服务器
+#      - name: SSH REMOTE
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.HOST}}
+#          username: ${{ secrets.SSH_USERNAME }}
+#          # 使用密码不用key
+#          password: ${{ secrets.SSH_PASSWORD }}
+#          port: ${{ secrets.PORT }}
+#          # | 执行多行脚本命令。run.sh中可以写删除 拉取 构建镜像...
+#          script: |
+#            cd /home/wxserver
+#            sh run.sh
+        
