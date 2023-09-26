@@ -64,4 +64,4 @@ jobs:
           # 构建完成后 push
           push: true
           # github账号 tag
-          tags: ${{ env.USERNAME }}/ylsyz-teahcer-info-backend:latest
+          tags: ${{ env.REGISTRY }}/ylsyz-teahcer-info-backend:latest
